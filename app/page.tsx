@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { ArrowRightIcon } from "lucide-react"
 
 export default function CounterPage() {
   const [count, setCount] = useState(0)
@@ -24,6 +26,10 @@ export default function CounterPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <Link href="/experiment">
+        Try Dark Mode Version of the app
+        <ArrowRightIcon className="w-4 h-4 ml-2" />
+      </Link>
       <div className="flex flex-col items-center gap-8">
         <span
           key={animKey}
