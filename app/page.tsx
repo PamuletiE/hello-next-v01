@@ -11,6 +11,7 @@ export default function CounterPage() {
   const [bump, setBump] = useState<"up" | "down" | null>(null)
   const [animKey, setAnimKey] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
+  const [history, setHistory] = useState<number[]>([])
   const prevCountRef = useRef(0)
 
   const increment = () => setCount((prev) => prev + 1)
@@ -18,6 +19,7 @@ export default function CounterPage() {
   const reset = () => {
     setCount(0)
     setMessage(null)
+    setHistory([])
   }
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function CounterPage() {
 
     setBump(count > prev ? "up" : "down")
     setAnimKey((k) => k + 1)
+    setHistory((h) => [count, ...h].slice(0, 5))
 
     if (count >= 5 && prev < 5) {
       setMessage("Nice! Keep going")
@@ -103,6 +106,37 @@ export default function CounterPage() {
             </Button>
           )}
         </div>
+
+        <section className="w-full max-w-sm rounded-xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/40 backdrop-blur px-5 py-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              History
+            </h2>
+            <span className="text-xs text-gray-600 dark:text-gray-400">
+              last 5
+            </span>
+          </div>
+
+          {history.length === 0 ? (
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+              No history yet.
+            </p>
+          ) : (
+            <ol className="mt-3 space-y-1 text-sm">
+              {history.map((v, i) => (
+                <li
+                  key={`${v}-${i}`}
+                  className="flex items-center justify-between rounded-lg px-2 py-1 text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900"
+                >
+                  <span className="tabular-nums font-medium">{v}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {i === 0 ? "latest" : `#${i + 1}`}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
       </div>
     </main>
   )
