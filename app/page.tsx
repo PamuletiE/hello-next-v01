@@ -25,7 +25,7 @@ export default function CounterPage() {
   }, [count])
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950">
       <Link href="/experiment">
         Try Dark Mode Version of the app
         <ArrowRightIcon className="w-4 h-4 ml-2" />
