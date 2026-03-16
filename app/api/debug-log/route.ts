@@ -14,7 +14,6 @@ export async function POST(req: Request) {
           "X-Debug-Session-Id": "1670fd",
         },
         body: JSON.stringify(payload),
-        // @ts-expect-error Node fetch supports this in Next runtime
         keepalive: true,
       }
     );
