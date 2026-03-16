@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import confetti from "canvas-confetti"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
 
@@ -151,6 +152,10 @@ export default function CounterPage() {
     return () => clearTimeout(t)
   }, [count])
 
+  const level = count >= 30 ? 4 : count >= 20 ? 3 : count >= 10 ? 2 : 1
+  const levelVariant =
+    level === 4 ? "level4" : level === 3 ? "level3" : level === 2 ? "level2" : "level1"
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950">
       <Link
@@ -161,6 +166,15 @@ export default function CounterPage() {
         <ArrowRightIcon className="w-4 h-4 ml-2" />
       </Link>
       <div className="flex flex-col items-center gap-6 mt-6">
+        <Badge
+          key={level}
+          variant={levelVariant}
+          className={`shadow-sm ${
+            prefersReducedMotionRef.current ? "" : "animate-in fade-in duration-300"
+          }`}
+        >
+          Level {level}
+        </Badge>
         <span
           key={animKey}
           className={`inline-block text-5xl sm:text-7xl font-bold text-gray-900 dark:text-gray-100 tabular-nums ${
