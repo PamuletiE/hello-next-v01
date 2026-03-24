@@ -15,6 +15,7 @@ export default function CounterPage() {
   const [past, setPast] = useState<number[]>([])
   const [future, setFuture] = useState<number[]>([])
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [maxCount, setMaxCount] = useState(0)
   const countRef = useRef(count)
   const hasInteractedRef = useRef(false)
   const prefersReducedMotionRef = useRef(false)
@@ -241,6 +242,13 @@ export default function CounterPage() {
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [redo, undo])
 
+  useEffect(() => {
+    if (count > maxCount) {
+      setMaxCount(count);
+      localStorage.setItem("maxCounterValue", String(count));
+    }
+  }, [count]); // runs whenever count changes
+
   const level = count >= 30 ? 4 : count >= 20 ? 3 : count >= 10 ? 2 : 1
   const levelVariant =
     level === 4 ? "level4" : level === 3 ? "level3" : level === 2 ? "level2" : "level1"
@@ -365,6 +373,12 @@ export default function CounterPage() {
             </ol>
           )}
         </section>
+        <Link
+  href="/stats"
+  className="mt-8 text-blue-600 hover:underline dark:text-blue-400"
+>
+  See your stats →
+</Link>
       </div>
     </main>
   )

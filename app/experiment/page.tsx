@@ -27,10 +27,6 @@ export default function ExperimentPage() {
       <span className="sr-only">Toggle theme</span>
     </Button>
       </div>
-      <Link
-      href="/">
-        Back to Home
-        </Link>
       </>
     )
 }
