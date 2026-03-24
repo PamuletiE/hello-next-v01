@@ -1,15 +1,15 @@
 // app/stats/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { hydrateMaxFromStorage, useCounterStore } from "@/store/counterStore";
 
 export default function StatsPage() {
-  const [maxCount, setMaxCount] = useState(0);
+  const { maxCount } = useCounterStore();
 
   useEffect(() => {
-    const saved = localStorage.getItem("maxCounterValue");
-    if (saved) setMaxCount(Number(saved));
+    hydrateMaxFromStorage();
   }, []);
 
   return (

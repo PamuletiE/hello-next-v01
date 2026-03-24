@@ -6,21 +6,22 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
+import { useCounterStore } from "@/store/counterStore"
 
 export default function CounterPage() {
-  const [count, setCount] = useState(0)
   const [bump, setBump] = useState<"up" | "down" | null>(null)
   const [animKey, setAnimKey] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
   const [past, setPast] = useState<number[]>([])
   const [future, setFuture] = useState<number[]>([])
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const [maxCount, setMaxCount] = useState(0)
-  const countRef = useRef(count)
   const hasInteractedRef = useRef(false)
   const prefersReducedMotionRef = useRef(false)
   const audioCtxRef = useRef<AudioContext | null>(null)
   const bumpTimeoutRef = useRef<number | null>(null)
+
+  const { count, increment, decrement, reset, setCount} = useCounterStore()
+  const countRef = useRef(count)
 
   const canPlaySound = useCallback(
     () => hasInteractedRef.current && !prefersReducedMotionRef.current,
@@ -121,36 +122,6 @@ export default function CounterPage() {
     [playDing],
   )
 
-  const increment = () => {
-    playTick()
-    setCount((prev) => {
-      pushHistory(prev)
-      const next = prev + 1
-      onCountChange(prev, next)
-      return next
-    })
-  }
-  const decrement = () =>
-    setCount((prev) => {
-      const next = Math.max(0, prev - 1)
-      if (next !== prev) {
-        playTick()
-        pushHistory(prev)
-        onCountChange(prev, next)
-      }
-      return next
-    })
-  const reset = () => {
-    playDing()
-    setCount((prev) => {
-      const next = 0
-      onCountChange(prev, next)
-      return next
-    })
-    setPast([])
-    setFuture([])
-  }
-
   useEffect(() => {
     countRef.current = count
   }, [count])
@@ -161,10 +132,11 @@ export default function CounterPage() {
       const previous = p[p.length - 1]
       const remaining = p.slice(0, -1)
       setFuture((f) => [countRef.current, ...f].slice(0, 50))
-      setCount((prev) => {
-        onCountChange(prev, previous, { timeTravel: true })
-        return previous
-      })
+      setCount(previous)
+      // setCount((prev) => {
+      //   onCountChange(prev, previous, { timeTravel: true })
+      //   return previous
+      // })
       return remaining
     })
   }, [onCountChange])
@@ -175,10 +147,11 @@ export default function CounterPage() {
       const next = f[0]
       const remaining = f.slice(1)
       setPast((p) => [...p, countRef.current].slice(-50))
-      setCount((prev) => {
-        onCountChange(prev, next, { timeTravel: true })
-        return next
-      })
+      setCount(next)
+      // setCount((prev) => {
+      //   onCountChange(prev, next, { timeTravel: true })
+      //   return next
+      // })
       return remaining
     })
   }, [onCountChange])
@@ -241,13 +214,6 @@ export default function CounterPage() {
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [redo, undo])
-
-  useEffect(() => {
-    if (count > maxCount) {
-      setMaxCount(count);
-      localStorage.setItem("maxCounterValue", String(count));
-    }
-  }, [count]); // runs whenever count changes
 
   const level = count >= 30 ? 4 : count >= 20 ? 3 : count >= 10 ? 2 : 1
   const levelVariant =
